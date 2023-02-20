@@ -11,13 +11,24 @@ namespace BankAccount.Tests
     [TestClass()]
     public class AccountTests
     {
-        [TestMethod()]
-        public void Deposit_APositiveAmount_AddToBalance()
-        {
-            Account acc = new("J. Doe");
-            acc.Deposit(100);
+        private Account acc;
 
-            Assert.AreEqual(100, acc.Balance);
+        [TestInitialize]
+        public void CreateDefaultAccount()
+        {
+            acc = new Account("J Doe");
+        }
+
+        [TestMethod()]
+        [DataRow(100)]
+        [DataRow(0.01)]
+        [DataRow(1.99)]
+        [DataRow(9_999.99)]
+        public void Deposit_APositiveAmount_AddToBalance(double depositAmount)
+        {
+            acc.Deposit(depositAmount);
+
+            Assert.AreEqual(depositAmount, acc.Balance);
         }
 
         [TestMethod]
@@ -25,7 +36,6 @@ namespace BankAccount.Tests
         {
             // AAA - Arrange Act Assert
             //Arrange
-            Account acc = new("J. Doe");
             double depositAmount = 100;
             double expectedReturn = 100;
 
@@ -35,5 +45,60 @@ namespace BankAccount.Tests
             // Assert
             Assert.AreEqual(expectedReturn, returnValue);
         }
+
+        [TestMethod]
+        [DataRow(-1)]
+        [DataRow(0)]
+        public void Deposit_ZeroOrLess_ThrowsArgumentException(double invalidDepositAmount)
+        {
+            // Arrange
+            // nothing to add here
+
+            // Act => Assert
+            Assert.ThrowsException<ArgumentOutOfRangeException>
+                (() => acc.Deposit(invalidDepositAmount));
+        }
+
+        [TestMethod]
+        public void Withdraw_PositiveAmount_DecreaseBalance()
+        {
+            // Arrange
+            double initialDeposit = 100;
+            double withdrawalAmount = 50;
+            double expectedBalance = initialDeposit - withdrawalAmount;
+            // Act
+            acc.Deposit(initialDeposit);
+            acc.Withdraw(withdrawalAmount);
+
+            double actualBalance = acc.Balance;
+
+            // Assert
+            Assert.AreEqual(expectedBalance, actualBalance);
+        }
+
+        [TestMethod]
+        public void Withdraw_PositiveAmount_ReturnsUpdatedBalance()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(-.01)]
+        [DataRow(-1000)]
+        public void Withdraw_ZeroOrLess_ThrowsArgumentOutOfRangeException()
+        {
+            Assert.Fail();
+        }
+
+        [TestMethod]
+        public void Withdraw_MoreThanAvailableBalance_ThrowsArgumentException()
+        {
+            Assert.Fail();
+        }
     }
 }
+// Withdrawing a positive amount - returns updated balance
+// Withdrawing 0 - Throws ArgumentOutRange exception
+// Withdrawing negative amount - Throws ArgumentOutRange exception
+// Withdrawing more than balance - ArgumentException
