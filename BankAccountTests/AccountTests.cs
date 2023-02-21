@@ -110,7 +110,3 @@ namespace BankAccount.Tests
         }
     }
 }
-// Withdrawing a positive amount - returns updated balance
-// Withdrawing 0 - Throws ArgumentOutRange exception
-// Withdrawing negative amount - Throws ArgumentOutRange exception
-// Withdrawing more than balance - ArgumentException
